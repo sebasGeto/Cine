@@ -1,0 +1,3 @@
+-- Funciones y triggers:
+-- fn_current_subscription, trg_profiles_limit, trg_subs_requires_payment (diferido),
+-- sp_purchase_subscription (contratación atómica con pago simulado).

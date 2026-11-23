@@ -1,0 +1,3 @@
+-- Restricciones e índices agregados al modelo:
+-- ux_accounts_email_ci, ux_profiles_name_ci, CHECKs, ex_subs_no_overlap (EXCLUDE USING gist),
+-- ck_subs_30_days, uq_payments_subscription, uq_payments_reference, índices de apoyo.

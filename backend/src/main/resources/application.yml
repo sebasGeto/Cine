@@ -1,0 +1,37 @@
+# Las credenciales NO van en este archivo: se leen de variables de entorno
+# o del archivo .env de la raíz del repositorio (que no se sube a Git).
+spring:
+  application:
+    name: cineconecta
+  config:
+    import:
+      - optional:file:.env[.properties]
+      - optional:file:../.env[.properties]
+
+  # PostgreSQL (fuente de verdad de cuentas, perfiles, planes, suscripciones y pagos)
+  datasource:
+    url: jdbc:postgresql://${PG_HOST:localhost}:${PG_PORT:5433}/${PG_DB:cineconecta}
+    username: ${PG_APP_USER}
+    password: ${PG_APP_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Las tablas las crean los scripts de db/postgres (con restricciones, triggers y funciones).
+      # Hibernate solo verifica que las entidades coincidan con ellas.
+      ddl-auto: validate
+      naming:
+        # Usa los nombres tal cual (accountId) en lugar de convertirlos a account_id.
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+  # MongoDB (catálogo, Mi lista, actividad de visualización y administradores)
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_APP_USER}:${MONGO_APP_PASSWORD}@${MONGO_HOST:localhost}:${MONGO_PORT:27018}/${MONGO_DB:cineconecta}?authSource=${MONGO_DB:cineconecta}
+
+server:
+  port: 8080
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:120}

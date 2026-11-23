@@ -1,0 +1,1 @@
+-- Vistas de apoyo (por ejemplo, suscripción vigente e informe de ingresos).

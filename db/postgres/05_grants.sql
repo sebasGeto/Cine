@@ -1,0 +1,3 @@
+-- Permisos mínimos por rol:
+-- cineconecta_app: lo que necesita la aplicación (sin DELETE).
+-- cineconecta_report: solo lectura para informes.

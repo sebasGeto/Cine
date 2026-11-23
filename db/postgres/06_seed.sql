@@ -1,0 +1,2 @@
+-- Datos de prueba: planes, cuentas y suscripciones válidas, vencidas e históricas,
+-- y casos para la demo (suscripción vencida, cupo de perfiles lleno, perfil infantil).

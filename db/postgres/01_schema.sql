@@ -1,0 +1,3 @@
+-- Tablas del modelo suministrado: accounts, profiles, plans, subscriptions, payments.
+-- Se conserva la estructura del enunciado (Fig. 1). Ver catálogo en el documento de la entrega.
+-- Nombres sin comillas (accountId queda como accountid en PostgreSQL).
