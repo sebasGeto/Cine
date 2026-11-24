@@ -2,8 +2,11 @@ package com.cineconecta.common;
 
 import java.util.stream.Collectors;
 
+import com.mongodb.MongoException;
+import jakarta.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -12,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.transaction.TransactionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -30,9 +34,30 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    private final DbErrorTranslator dbErrorTranslator;
+
+    public GlobalExceptionHandler(DbErrorTranslator dbErrorTranslator) {
+        this.dbErrorTranslator = dbErrorTranslator;
+    }
+
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<Object> handleApi(ApiException ex) {
         return build(ex.getStatus(), ex.getCode(), ex.getMessage());
+    }
+
+    /**
+     * Errores de las bases. Llegan aquí después del rollback: los servicios no los capturan.
+     * Además de DataAccessException se cubren los que no heredan de ella (sin conexión para abrir
+     * la transacción, EntityManager usado directamente y MongoTemplate sin traducir).
+     */
+    @ExceptionHandler({DataAccessException.class, TransactionException.class,
+            PersistenceException.class, MongoException.class})
+    public ResponseEntity<Object> handleDatabase(Exception ex) {
+        ApiException api = dbErrorTranslator.translate(ex);
+        if (api.getStatus().is5xxServerError()) {
+            log.error("Error de base de datos ({})", api.getCode(), ex);
+        }
+        return handleApi(api);
     }
 
     /** Las decisiones de seguridad las responde Spring Security (401/403); aquí no se convierten en 500. */
