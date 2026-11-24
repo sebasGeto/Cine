@@ -1,0 +1,58 @@
+/* Estilos de Mi lista y reproducción. Se apoyan en las variables y clases de .cat (catálogo). */
+.rep-nav { display: flex; gap: 1rem; flex-wrap: wrap; margin: 0.5rem 0 1rem; }
+.rep-nav a[aria-current='page'] { font-weight: 600; text-decoration: none; }
+
+.rep-bar { height: 0.4rem; background: var(--cat-line); border-radius: 999px; overflow: hidden; }
+.rep-bar > span { display: block; height: 100%; background: var(--cat-accent); }
+
+.rep-row {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(9rem, 11rem);
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+.rep-row li { display: grid; gap: 0.3rem; align-content: start; font-size: 0.9rem; }
+
+.rep-player {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--cat-line);
+  border-radius: 6px;
+  max-width: 46rem;
+}
+.rep-screen {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  background: #10161d;
+  color: #fff;
+  border-radius: 4px;
+  text-align: center;
+  padding: 1rem;
+}
+.rep-screen strong { font-size: 2.2rem; font-variant-numeric: tabular-nums; }
+.rep-times { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
+.rep-controls { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+.rep-controls label { display: flex; gap: 0.4rem; align-items: center; }
+.rep-controls select { width: auto; }
+.rep-stats { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 0; }
+.rep-stats div { display: grid; }
+.rep-stats dt { color: var(--cat-muted); font-size: 0.85rem; }
+.rep-stats dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+.rep-list { list-style: none; padding: 0; display: grid; gap: 1rem; }
+.rep-list li {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  align-items: center;
+  border-bottom: 1px solid var(--cat-line);
+  padding-bottom: 1rem;
+}
+.rep-list .cat-cover { width: 5rem; }
+.rep-dim { opacity: 0.55; }
