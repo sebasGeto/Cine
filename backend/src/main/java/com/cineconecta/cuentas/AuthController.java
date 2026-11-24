@@ -15,7 +15,7 @@ import com.cineconecta.cuentas.dto.RegisterResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-/** Sesión de los clientes. Rutas públicas. */
+/** Registro y sesión de los clientes. Rutas públicas. */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -34,5 +34,15 @@ public class AuthController {
     @PostMapping("/login")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    /**
+     * RF-03 y RF-34. La API no guarda sesiones: el frontend descarta el token, que de todas
+     * formas vence a los JWT_EXPIRATION_MINUTES. Sirve a clientes y administradores.
+     */
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout() {
+        // Sin estado en el servidor: no hay nada que borrar
     }
 }
