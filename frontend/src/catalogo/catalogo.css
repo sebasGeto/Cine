@@ -1,0 +1,85 @@
+/* Estilos del catálogo. Todo va bajo .cat para no afectar las páginas de otras áreas. */
+.cat {
+  --cat-line: #d5d8de;
+  --cat-muted: #5b6270;
+  --cat-accent: #0b5c8f;
+  max-width: 70rem;
+  margin: 0 auto;
+}
+.cat *, .cat *::before { box-sizing: border-box; }
+.cat a { color: var(--cat-accent); }
+.cat input, .cat select, .cat textarea, .cat button { font: inherit; }
+.cat input, .cat select, .cat textarea {
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--cat-line);
+  border-radius: 4px;
+}
+.cat button, .cat-button {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--cat-line);
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+}
+.cat button:disabled { opacity: 0.5; cursor: default; }
+.cat .cat-primary {
+  background: var(--cat-accent);
+  border-color: var(--cat-accent);
+  color: #fff;
+  text-decoration: none;
+}
+.cat label { display: grid; gap: 0.2rem; font-size: 0.9rem; align-content: start; }
+.cat fieldset { border: 1px solid var(--cat-line); border-radius: 4px; min-width: 0; }
+.cat-narrow { max-width: 24rem; }
+.cat-session { display: flex; gap: 0.5rem; justify-content: flex-end; padding: 1rem 2rem 0; }
+.cat-muted { color: var(--cat-muted); }
+.cat-error { color: #a11; background: #fdecec; padding: 0.6rem 0.8rem; border-radius: 4px; overflow-wrap: anywhere; }
+.cat-ok { color: #14532d; background: #e7f6ec; padding: 0.6rem 0.8rem; border-radius: 4px; }
+.cat-filters, .cat-columns, .cat-row {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  align-items: end;
+}
+.cat-form { display: grid; gap: 0.9rem; max-width: 50rem; }
+.cat-form > button { justify-self: start; }
+.cat-row { margin-bottom: 0.75rem; }
+.cat-grid {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+}
+.cat-grid li { display: grid; gap: 0.2rem; align-content: start; font-size: 0.9rem; }
+.cat-grid a { display: grid; gap: 0.4rem; font-size: 1rem; text-decoration: none; }
+.cat-grid a:hover strong { text-decoration: underline; }
+.cat-cover { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 4px; }
+.cat-cover-empty {
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  text-align: center;
+  background: #24303d;
+  color: #fff;
+}
+.cat-detail { display: grid; gap: 2rem; grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); align-items: start; }
+.cat-detail h1 { margin-top: 0; }
+.cat-detail dl { display: grid; grid-template-columns: auto 1fr; gap: 0.3rem 1rem; }
+.cat-detail dt { color: var(--cat-muted); }
+.cat-detail dd { margin: 0; }
+.cat-episodes li { margin-bottom: 0.6rem; }
+.cat-season { border-top: 1px solid var(--cat-line); padding: 0.5rem 0 1rem; }
+.cat-table { overflow-x: auto; }
+.cat-table table { width: 100%; border-collapse: collapse; }
+.cat-table th, .cat-table td { text-align: left; padding: 0.5rem; border-bottom: 1px solid var(--cat-line); }
+.cat-actions { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.cat-status { padding: 0.1rem 0.5rem; border-radius: 4px; font-size: 0.85rem; background: #eceef1; }
+.cat-published { background: #e7f6ec; color: #14532d; }
+.cat-retired { background: #fdecec; color: #8a1c1c; }
+.cat-pagination { display: flex; gap: 1rem; align-items: center; justify-content: center; margin: 1.5rem 0; flex-wrap: wrap; }
+@media (max-width: 40rem) {
+  .cat-detail { grid-template-columns: 1fr; }
+  .cat-detail .cat-cover { max-width: 12rem; }
+}
