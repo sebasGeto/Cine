@@ -116,3 +116,5 @@ Los carga `db/postgres/06_seed.sql`. Todas las cuentas usan la contraseña **`Ci
 | carla@cineconecta.com | Sin suscripción | Contratación, concurrencia y fallo antes del pago |
 | diego@cineconecta.com | Premium vigente, 3 perfiles activos y 1 inactivo | Flujo normal |
 | elena@cineconecta.com | Básico vigente | Flujo normal |
+
+**Administrador** (lo carga `db/mongo/03_seed.js`): usuario `admin` / admin@cineconecta.com, con la misma contraseña de prueba.
