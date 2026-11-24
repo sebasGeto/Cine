@@ -63,6 +63,7 @@ class DbErrorTranslatorTest {
             "23505, uq_payments_reference, 409, DUPLICATE",
             "23P01, ex_subs_no_overlap, 409, SUBSCRIPTION_OVERLAP",
             "23514, ck_profiles_max_age, 400, INVALID_DATA",
+            "22021, , 400, INVALID_DATA",
             "40P01, , 409, CONCURRENT_UPDATE",
             "57P01, , 503, DATABASE_UNAVAILABLE",
             "42501, , 500, INTERNAL_ERROR"

@@ -77,13 +77,18 @@ public class DbErrorTranslator {
             case "23505" -> fromUniqueViolation(error.getConstraint());
             case "23P01" -> new ApiException(HttpStatus.CONFLICT, "SUBSCRIPTION_OVERLAP",
                     "La cuenta ya tiene una suscripción en ese período");
-            // CHECK, NOT NULL, clave foránea, texto demasiado largo, número fuera de rango
-            case "23514", "23502", "23503", "22001", "22003" -> new ApiException(HttpStatus.BAD_REQUEST,
-                    "INVALID_DATA", "Los datos no cumplen las reglas de la base de datos");
+            // CHECK, NOT NULL, clave foránea
+            case "23514", "23502", "23503" -> invalidData();
             // Interbloqueo o conflicto de serialización: la operación se revirtió y se puede reintentar
             case "40001", "40P01" -> new ApiException(HttpStatus.CONFLICT, "CONCURRENT_UPDATE",
                     "Otra operación modificó los mismos datos; intente de nuevo");
-            default -> isUnavailableState(state) ? unavailable() : internalError();
+            default -> {
+                if (isUnavailableState(state)) {
+                    yield unavailable();
+                }
+                // Clase 22: texto demasiado largo, número fuera de rango, carácter inválido...
+                yield state.startsWith("22") ? invalidData() : internalError();
+            }
         };
     }
 
@@ -141,6 +146,11 @@ public class DbErrorTranslator {
     /** Clases 08 (conexión), 53 (recursos agotados) y 57P (servidor apagándose o iniciando). */
     private static boolean isUnavailableState(String state) {
         return state != null && (state.startsWith("08") || state.startsWith("53") || state.startsWith("57P"));
+    }
+
+    private static ApiException invalidData() {
+        return new ApiException(HttpStatus.BAD_REQUEST, "INVALID_DATA",
+                "Los datos no cumplen las reglas de la base de datos");
     }
 
     private static ApiException duplicate() {
