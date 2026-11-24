@@ -14,13 +14,15 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.cineconecta.acceso.ActiveProfile;
-import com.cineconecta.acceso.ProfileGate;
 import com.cineconecta.common.ApiException;
 import com.cineconecta.milista.dto.MyListEntry;
+import com.cineconecta.perfiles.ActiveProfile;
+import com.cineconecta.perfiles.ProfileAccessService;
+import com.cineconecta.security.CurrentUser;
 
 /**
- * Mi lista (RF-24 a RF-26). Todo vive en MongoDB; el perfil se valida contra PostgreSQL.
+ * Mi lista (RF-24 a RF-26). Todo vive en MongoDB; el perfil se valida contra PostgreSQL
+ * con ProfileAccessService.verify (403 PROFILE_NOT_ALLOWED si no es de la cuenta o está inactivo).
  *
  * - Agregar: solo contenidos publicados y permitidos para el perfil, sin duplicados.
  * - Quitar: siempre se puede, aunque el contenido ya esté retirado.
@@ -31,17 +33,20 @@ public class MyListService {
 
     private final MyListRepository repository;
     private final MongoTemplate mongo;
-    private final ProfileGate profileGate;
+    private final ProfileAccessService profileAccess;
+    private final CurrentUser currentUser;
 
-    public MyListService(MyListRepository repository, MongoTemplate mongo, ProfileGate profileGate) {
+    public MyListService(MyListRepository repository, MongoTemplate mongo,
+                         ProfileAccessService profileAccess, CurrentUser currentUser) {
         this.repository = repository;
         this.mongo = mongo;
-        this.profileGate = profileGate;
+        this.profileAccess = profileAccess;
+        this.currentUser = currentUser;
     }
 
     /** RF-26: lista del perfil, del más reciente al más antiguo. */
-    public List<MyListEntry> list(int profileId) {
-        ActiveProfile profile = profileGate.requireOwnActiveProfile(profileId);
+    public List<MyListEntry> list(Integer profileId) {
+        ActiveProfile profile = verifyProfile(profileId);
         List<MyListItem> items = repository.findByProfileIdOrderByAddedAtDesc(profile.profileId());
         if (items.isEmpty()) {
             return List.of();
@@ -58,8 +63,8 @@ public class MyListService {
     }
 
     /** RF-24: agrega un contenido a la lista del perfil. */
-    public MyListEntry add(int profileId, String contentIdText) {
-        ActiveProfile profile = profileGate.requireOwnActiveProfile(profileId);
+    public MyListEntry add(Integer profileId, String contentIdText) {
+        ActiveProfile profile = verifyProfile(profileId);
         ObjectId contentId = parseId(contentIdText);
 
         ContentSummary content = findContents(List.of(contentId)).stream().findFirst().orElse(null);
@@ -70,7 +75,7 @@ public class MyListService {
         if (ContentSummary.RETIRED.equals(content.getStatus())) {
             throw new ApiException(HttpStatus.CONFLICT, "CONTENT_RETIRED", "El contenido fue retirado del catálogo");
         }
-        if (!profile.allows(content.getAgeRating())) {
+        if (!allows(profile, content.getAgeRating())) {
             throw new ApiException(HttpStatus.FORBIDDEN, "AGE_RATING_NOT_ALLOWED",
                 "La clasificación del contenido no está permitida para este perfil");
         }
@@ -80,18 +85,27 @@ public class MyListService {
             repository.insert(item);
         } catch (DuplicateKeyException e) {
             // Índice único ux_mylist_profile_content: también protege ante dos clics simultáneos
-            throw new ApiException(HttpStatus.CONFLICT, "ALREADY_IN_MY_LIST", "El contenido ya está en Mi lista");
+            throw new ApiException(HttpStatus.CONFLICT, "ALREADY_IN_LIST", "El contenido ya está en Mi lista");
         }
         return toEntry(item, content, profile);
     }
 
     /** RF-25: quita un contenido de la lista del perfil. */
-    public void remove(int profileId, String contentIdText) {
-        ActiveProfile profile = profileGate.requireOwnActiveProfile(profileId);
+    public void remove(Integer profileId, String contentIdText) {
+        ActiveProfile profile = verifyProfile(profileId);
         long deleted = repository.deleteByProfileIdAndContentId(profile.profileId(), parseId(contentIdText));
         if (deleted == 0) {
             throw new ApiException(HttpStatus.NOT_FOUND, "NOT_IN_MY_LIST", "El contenido no está en Mi lista");
         }
+    }
+
+    /** El accountId sale del token, nunca de la petición. */
+    private ActiveProfile verifyProfile(Integer profileId) {
+        return profileAccess.verify(currentUser.accountId(), profileId);
+    }
+
+    private static boolean allows(ActiveProfile profile, Integer ageRating) {
+        return ageRating != null && ageRating <= profile.maxAgeRating();
     }
 
     private List<ContentSummary> findContents(List<ObjectId> ids) {
@@ -108,7 +122,7 @@ public class MyListService {
         }
         boolean retired = ContentSummary.RETIRED.equals(c.getStatus());
         boolean published = ContentSummary.PUBLISHED.equals(c.getStatus());
-        boolean allowed = c.getAgeRating() != null && profile.allows(c.getAgeRating());
+        boolean allowed = allows(profile, c.getAgeRating());
         return new MyListEntry(c.getId().toHexString(), c.getTitle(), c.getType(), c.getReleaseYear(),
             c.getAgeRating(), c.getCoverUrl(), published && allowed, retired, allowed, item.getAddedAt());
     }
