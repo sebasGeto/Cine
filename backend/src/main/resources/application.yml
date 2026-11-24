@@ -41,3 +41,7 @@ app:
   jwt:
     secret: ${JWT_SECRET}
     expiration-minutes: ${JWT_EXPIRATION_MINUTES:120}
+  # Usuario de PostgreSQL de solo lectura para el informe de ingresos
+  report-datasource:
+    username: ${PG_REPORT_USER}
+    password: ${PG_REPORT_PASSWORD}
