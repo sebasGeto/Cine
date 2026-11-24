@@ -104,3 +104,15 @@ Queda en `http://localhost:5173`. Las peticiones a `/api` se redirigen al backen
 - Los nombres de columnas se usan tal cual (`accountId`), sin conversión a `account_id`.
 - La aplicación se conecta con usuarios de mínimo privilegio (`cineconecta_app`), no con el administrador de la base.
 - No hay transacciones entre las dos bases; ningún flujo escribe en ambas a la vez (ver `docs/decisiones.md`).
+
+## Usuarios de prueba
+
+Los carga `db/postgres/06_seed.sql`. Todas las cuentas usan la contraseña **`Cine2026*`** (en la base solo se guarda su hash BCrypt).
+
+| Cuenta | Situación | Escenario de la demo |
+|---|---|---|
+| ana@cineconecta.com | Estándar vigente, 2/2 perfiles (Tomás es infantil, edad máxima 7) | Rechazo por máximo de perfiles y por clasificación no permitida |
+| bruno@cineconecta.com | Suscripción vencida | Rechazo por suscripción vencida |
+| carla@cineconecta.com | Sin suscripción | Contratación, concurrencia y fallo antes del pago |
+| diego@cineconecta.com | Premium vigente, 3 perfiles activos y 1 inactivo | Flujo normal |
+| elena@cineconecta.com | Básico vigente | Flujo normal |
