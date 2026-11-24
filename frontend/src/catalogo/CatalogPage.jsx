@@ -5,6 +5,8 @@ import CatalogGate from './CatalogGate.jsx'
 import Cover from './Cover.jsx'
 import Pagination from './Pagination.jsx'
 import { TYPES, ageLabel } from './format.js'
+import ContinueWatching from '../reproduccion/ContinueWatching.jsx'
+import ViewerNav from '../reproduccion/ViewerNav.jsx'
 
 const FILTERS = ['q', 'type', 'genre', 'language', 'year']
 const SIZE = 12
@@ -53,6 +55,8 @@ function Search({ profileId }) {
 
   return (
     <main>
+      <ViewerNav />
+      <ContinueWatching profileId={profileId} />
       <h1>Catálogo</h1>
       {/* key: al cambiar la URL (atrás, limpiar) los campos muestran los filtros aplicados */}
       <form key={query} className="cat-filters" onSubmit={submit}>

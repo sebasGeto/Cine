@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { errorMessage, getContent, getSeasons } from '../api/catalog.js'
 import CatalogGate from './CatalogGate.jsx'
 import Cover from './Cover.jsx'
 import { SOURCE_KINDS, TYPES, ageLabel, durationLabel } from './format.js'
+import MyListButton from '../reproduccion/MyListButton.jsx'
+import { playPath } from '../reproduccion/time.js'
 
 // RF-22 y RF-23: detalle de un contenido; si es serie, sus temporadas y episodios.
 export default function ContentPage() {
@@ -52,6 +54,12 @@ function Detail({ id, profileId }) {
                 content.durationSec && durationLabel(content.durationSec)].filter(Boolean).join(' · ')}
             </p>
             <p>{content.synopsis}</p>
+            <div className="cat-actions">
+              {content.type !== 'series' && (
+                <Link className="cat-button cat-primary" to={playPath(content.id)}>Reproducir</Link>
+              )}
+              <MyListButton profileId={profileId} contentId={content.id} />
+            </div>
             <dl>
               <Field label="Géneros" values={content.genres} />
               <Field label="Países" values={content.countries} />
@@ -70,7 +78,8 @@ function Detail({ id, profileId }) {
                 <ol className="cat-episodes">
                   {s.episodes.map((e) => (
                     <li key={e.episodeId} value={e.number}>
-                      <strong>{e.title}</strong> <span className="cat-muted">{durationLabel(e.durationSec)}</span>
+                      <strong>{e.title}</strong> <span className="cat-muted">{durationLabel(e.durationSec)}</span>{' '}
+                      <Link to={playPath(content.id, e.episodeId)}>Reproducir</Link>
                       <div>{e.synopsis}</div>
                     </li>
                   ))}
