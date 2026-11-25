@@ -10,4 +10,20 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+// Token vencido o inválido: se borra la sesión y se vuelve al inicio de sesión que corresponde.
+// Las rutas /auth/ se excluyen: ahí un 401 es "usuario o contraseña incorrectos".
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const url = error.config?.url ?? ''
+    if (error.response?.status === 401 && !url.startsWith('/auth/')) {
+      localStorage.removeItem('token')
+      localStorage.removeItem('profileId')
+      localStorage.removeItem('profileName')
+      window.location.assign(window.location.pathname.startsWith('/admin') ? '/admin/login' : '/login')
+    }
+    return Promise.reject(error)
+  },
+)
+
 export default api

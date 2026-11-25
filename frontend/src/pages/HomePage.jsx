@@ -1,27 +1,10 @@
-import { useEffect, useState } from 'react'
-import api from '../api/client.js'
+import { Navigate } from 'react-router-dom'
+import { currentProfileId, currentRole } from '../catalogo/session.js'
 
-// Página temporal: verifica que el backend responde y que ve las dos bases.
+// Entrada de la aplicación: lleva a cada quien a su pantalla según la sesión guardada.
 export default function HomePage() {
-  const [health, setHealth] = useState(null)
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    api.get('/health')
-      .then((res) => setHealth(res.data))
-      .catch(() => setError('No se pudo contactar el backend'))
-  }, [])
-
-  return (
-    <main>
-      <h1>CineConecta</h1>
-      {error && <p>{error}</p>}
-      {health && (
-        <ul>
-          <li>PostgreSQL: {health.postgres}</li>
-          <li>MongoDB: {health.mongo}</li>
-        </ul>
-      )}
-    </main>
-  )
+  const role = currentRole()
+  if (role === 'ADMIN') return <Navigate to="/admin/catalogo" replace />
+  if (role === 'CLIENT') return <Navigate to={currentProfileId() ? '/catalogo' : '/perfiles'} replace />
+  return <Navigate to="/login" replace />
 }

@@ -83,3 +83,7 @@
   .cat-detail { grid-template-columns: 1fr; }
   .cat-detail .cat-cover { max-width: 12rem; }
 }
+.cat-session { align-items: center; flex-wrap: wrap; }
+.cat-admin-nav { display: flex; gap: 1rem; margin-right: auto; }
+.cat-admin-nav a[aria-current='page'] { font-weight: 600; text-decoration: none; }
+.cat-table tfoot th { border-bottom: 0; }

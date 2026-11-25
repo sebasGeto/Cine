@@ -47,6 +47,9 @@ export const addEpisode = (id, season, episode) =>
 export const updateEpisode = (id, season, number, changes) =>
   api.put(`${ADMIN}/${id}/seasons/${season}/episodes/${number}`, changes).then((r) => r.data)
 
-// Mensaje del backend ({code, message}) o uno genérico si no hubo respuesta
-export const errorMessage = (error) =>
-  error.response?.data?.message ?? 'No se pudo contactar el backend'
+// Mensaje del backend ({code, message}) o uno genérico si no hubo respuesta. Los mensajes de
+// las funciones y triggers de PostgreSQL llegan en minúscula: se pone la primera en mayúscula.
+export function errorMessage(error) {
+  const message = error.response?.data?.message ?? 'No se pudo contactar el backend'
+  return message.charAt(0).toUpperCase() + message.slice(1)
+}
