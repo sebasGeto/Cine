@@ -1,0 +1,31 @@
+/* Perfiles. Se apoya en las variables y clases de .cat (catálogo). */
+.pf-pick {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin: 1rem 0 2rem;
+}
+.cat .pf-pick button {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  width: 8rem;
+  padding: 1rem 0.5rem;
+  border-radius: 8px;
+}
+.cat .pf-pick button:hover:not(:disabled) { border-color: var(--cat-accent); }
+.pf-avatar {
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 8px;
+  background: var(--cat-accent);
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+.pf-form { margin: 1rem 0; max-width: 40rem; }
+.pf-form .cat-actions { align-self: end; }

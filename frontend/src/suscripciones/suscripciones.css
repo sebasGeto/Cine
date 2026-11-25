@@ -1,0 +1,32 @@
+/* Planes y suscripción. Se apoya en las variables y clases de .cat (catálogo). */
+.sub-plans {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  margin: 1.5rem 0;
+}
+.sub-plans li {
+  display: grid;
+  gap: 0.4rem;
+  align-content: start;
+  justify-items: start;
+  padding: 1.25rem;
+  border: 1px solid var(--cat-line);
+  border-radius: 8px;
+}
+.sub-plans h3, .sub-plans p { margin: 0; }
+.sub-plans .sub-mine { border-color: var(--cat-accent); box-shadow: 0 0 0 1px var(--cat-accent); }
+.sub-price { font-size: 1.4rem; font-weight: 600; }
+.sub-current, .sub-checkout {
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--cat-line);
+  border-radius: 8px;
+  max-width: 40rem;
+}
+.sub-current h2, .sub-checkout h2 { margin-top: 0; }
+.cat .sub-radio { display: flex; gap: 0.5rem; align-items: center; font-size: 1rem; }
+.cat .sub-radio input { width: auto; }
+.sub-current-row { font-weight: 600; }
+.sub-ref { max-width: 9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.85rem; }
